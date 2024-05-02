@@ -2,50 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:phms/Colors/colors.dart';
 import 'package:phms/screens/main_screens/Awareness/awareness.dart';
+import 'package:phms/screens/main_screens/Awareness/new_awareness.dart';
 import 'package:phms/screens/main_screens/Health%20Monitoring/health_monitoring.dart';
-import 'package:phms/screens/main_screens/Medications/new_medicine.dart';
+import 'package:phms/screens/main_screens/Medications/medications.dart';
 import 'package:phms/screens/main_screens/Reports/reports.dart';
-import 'package:phms/screens/main_screens/Tasks/tasks.dart';
+import 'package:phms/screens/main_screens/Tasks/newTask.dart'; // Changed import
+import 'package:phms/screens/main_screens/Tasks/tasks.dart'; // Changed import
 import 'package:phms/screens/dashboard.dart';
 import 'package:phms/screens/logout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MedicationDetail {
-  final String name;
-  final String description;
-  final int dosesPerDay;
+class AwarenessDetail {
+  // Changed class name
+  final String awarenessName; // Changed variable name
+  final String awarenessDescription; // Changed variable name
+  final int awarenessesPerDay; // Changed variable name
 
-  MedicationDetail({
-    required this.name,
-    required this.description,
-    required this.dosesPerDay,
+  AwarenessDetail({
+    required this.awarenessName, // Changed variable name
+    required this.awarenessDescription, // Changed variable name
+    required this.awarenessesPerDay, // Changed variable name
   });
 }
 
-class MedicationsScreen extends StatefulWidget {
-  const MedicationsScreen({Key? key}) : super(key: key);
+class AwarenessesScreen extends StatefulWidget {
+  // Changed class name
+  const AwarenessesScreen({Key? key}) : super(key: key); // Corrected super call
 
   @override
-  State<MedicationsScreen> createState() => _MedicationsScreenState();
+  State<AwarenessesScreen> createState() =>
+      _AwarenessesScreenState(); // Changed class name
 }
 
-class _MedicationsScreenState extends State<MedicationsScreen> {
-  List<MedicationDetail> medicationDetails = [];
+class _AwarenessesScreenState extends State<AwarenessesScreen> {
+  // Changed class name
+  List<AwarenessDetail> awarenessDetails = []; // Changed list name
 
   @override
   void initState() {
     super.initState();
-    loadMedicineData();
+    loadAwarenessData();
   }
 
-  loadMedicineData() async {
+  loadAwarenessData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    // Load medication details from SharedPreferences or any other storage mechanism
+    // Load awareness details from SharedPreferences or any other storage mechanism
   }
 
-  void deleteMedication(int index) {
+  void deleteAwareness(int index) {
     setState(() {
-      medicationDetails.removeAt(index);
+      awarenessDetails.removeAt(index); // Changed list name
     });
   }
 
@@ -105,11 +111,11 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
             ),
             GestureDetector(
               onTap: () {
-                /*Navigator.pushReplacement(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MedicationsScreen(),
-                    ));*/
+                    ));
               },
               child: ListTile(
                 title: Text(
@@ -135,11 +141,11 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(
+               /* Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => AwarenessesScreen(),
-                    ));
+                    ));*/
               },
               child: ListTile(
                 title: Text(
@@ -186,7 +192,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
       ),
       appBar: AppBar(
         title: Text(
-          "Medications",
+          "Awarenesses", // Changed title
         ),
         backgroundColor: AppColor.primaryColor,
       ),
@@ -196,9 +202,10 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: medicationDetails.length,
+                  itemCount: awarenessDetails.length, // Changed list name
                   itemBuilder: (context, index) {
-                    final medication = medicationDetails[index];
+                    final awareness =
+                        awarenessDetails[index]; // Changed list name
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Container(
@@ -218,64 +225,30 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                children: [
-                                  Text(
-                                    'Name : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.name,
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
+                              Text(
+                                'Awareness Name : ${awareness.awarenessName}', // Changed variable name
+                                style: TextStyle(
+                                  color: AppColor.textWhiteColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
-                              Wrap(
-                                children: [
-                                  Text(
-                                    'Description : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.description,
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
+                              Text(
+                                'Awareness Description : ${awareness.awarenessDescription}', // Changed variable name
+                                style: TextStyle(
+                                  color: AppColor.textWhiteColor,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 20,
+                                ),
                               ),
-                              Wrap(
-                                children: [
-                                  Text(
-                                    'Doses per Day : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.dosesPerDay.toString(),
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
-                              ),
+                              /* Text(
+                                'Awareness per Day : ${awareness.awarenessesPerDay}', // Changed variable name
+                                style: TextStyle(
+                                  color: AppColor.textWhiteColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),*/
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -283,7 +256,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                     padding: const EdgeInsets.only(right: 8),
                                     child: GestureDetector(
                                       onTap: () {
-                                        deleteMedication(index);
+                                        deleteAwareness(
+                                            index); // Changed list name
                                       },
                                       child: CircleAvatar(
                                         backgroundColor: Colors.red,
@@ -308,30 +282,35 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
               ),
             ],
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewMedicinePage(
-                          onSubmit: (name, description, dosesPerDay) {
-                            setState(() {
-                              medicationDetails.add(MedicationDetail(
-                                name: name,
-                                description: description,
-                                dosesPerDay: dosesPerDay,
-                              ));
-                            });
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  child: Padding(
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewAwarenessScreen(
+                    // Changed import and class name
+                    onSubmit: (name, description, awarenessesPerDay) {
+                      // Changed variable name
+                      setState(() {
+                        awarenessDetails.add(AwarenessDetail(
+                          // Changed list name and class name
+                          awarenessName: name, // Changed variable name
+                          awarenessDescription:
+                              description, // Changed variable name
+                          awarenessesPerDay:
+                              awarenessesPerDay, // Changed variable name
+                        ));
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: Container(
                       height: Height * 0.085,
@@ -347,7 +326,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                 color: AppColor.textWhiteColor,
                               ),
                               Text(
-                                "Add Medication",
+                                "Add Awareness",
                                 style: TextStyle(
                                   color: AppColor.textWhiteColor,
                                   fontSize: 18,
@@ -372,8 +351,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

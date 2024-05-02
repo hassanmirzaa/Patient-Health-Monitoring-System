@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:phms/screens/main_screens/dashboard.dart';
+import 'package:phms/screens/dashboard.dart';
 import 'package:phms/screens/starting_screens/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class SplaScreen extends StatelessWidget {
   @override
@@ -27,47 +26,35 @@ class _SplashScreenState extends State<SplashScreen> {
     isLogin();
   }
 
-  void isLogin()async{
-    SharedPreferences sp =await SharedPreferences.getInstance();
-    bool isLogin =sp.getBool("isLogin") ?? false;
+  void isLogin() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool isLogin = sp.getBool("isLogin") ?? false;
 
-if(isLogin){
-Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => DahsboardScreen()),
-      );
-    });
-}
-else{
-  Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => SignUp()),
-      );
-    });
-}
-
+    if (isLogin) {
+      Timer(Duration(seconds: 3), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DahsboardScreen()),
+        );
+      });
+    } else {
+      Timer(Duration(seconds: 3), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignUp()),
+        );
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children:[
-          Image.asset(
-            'assets/images/sample.jpg',
-            width: double.infinity,
-          height: double.infinity,
-            fit: BoxFit.cover,
-            ),
-          Center(
-          child: Text(
-            "PHMS",
-            style: TextStyle(fontSize: 120.0,color: Colors.red.shade500),
-          ),
-        ),] 
-      ),
-    );
+        body: Container(
+      child: Image.asset('assets/images/1.png',
+      fit: BoxFit.cover,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,),
+    ));
   }
 }

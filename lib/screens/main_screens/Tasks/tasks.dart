@@ -3,49 +3,51 @@ import 'package:flutter/widgets.dart';
 import 'package:phms/Colors/colors.dart';
 import 'package:phms/screens/main_screens/Awareness/awareness.dart';
 import 'package:phms/screens/main_screens/Health%20Monitoring/health_monitoring.dart';
-import 'package:phms/screens/main_screens/Medications/new_medicine.dart';
+import 'package:phms/screens/main_screens/Medications/medications.dart';
 import 'package:phms/screens/main_screens/Reports/reports.dart';
-import 'package:phms/screens/main_screens/Tasks/tasks.dart';
+import 'package:phms/screens/main_screens/Tasks/newTask.dart'; // Changed import
+import 'package:phms/screens/main_screens/Tasks/tasks.dart'; // Changed import
 import 'package:phms/screens/dashboard.dart';
 import 'package:phms/screens/logout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MedicationDetail {
-  final String name;
-  final String description;
-  final int dosesPerDay;
+class TaskDetail {
+  // Changed class name
+  final String taskName; // Changed variable name
+  final String taskDescription; // Changed variable name
+  final int tasksPerDay; // Changed variable name
 
-  MedicationDetail({
-    required this.name,
-    required this.description,
-    required this.dosesPerDay,
+  TaskDetail({
+    required this.taskName, // Changed variable name
+    required this.taskDescription, // Changed variable name
+    required this.tasksPerDay, // Changed variable name
   });
 }
 
-class MedicationsScreen extends StatefulWidget {
-  const MedicationsScreen({Key? key}) : super(key: key);
+class TasksScreen extends StatefulWidget {
+  const TasksScreen({Key? key}) : super(key: key); // Corrected super call
 
   @override
-  State<MedicationsScreen> createState() => _MedicationsScreenState();
+  State<TasksScreen> createState() => _TasksScreenState();
 }
 
-class _MedicationsScreenState extends State<MedicationsScreen> {
-  List<MedicationDetail> medicationDetails = [];
+class _TasksScreenState extends State<TasksScreen> {
+  List<TaskDetail> taskDetails = []; // Changed list name
 
   @override
   void initState() {
     super.initState();
-    loadMedicineData();
+    loadTaskData();
   }
 
-  loadMedicineData() async {
+  loadTaskData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    // Load medication details from SharedPreferences or any other storage mechanism
+    // Load task details from SharedPreferences or any other storage mechanism
   }
 
-  void deleteMedication(int index) {
+  void deleteTask(int index) {
     setState(() {
-      medicationDetails.removeAt(index);
+      taskDetails.removeAt(index); // Changed list name
     });
   }
 
@@ -105,11 +107,11 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
             ),
             GestureDetector(
               onTap: () {
-                /*Navigator.pushReplacement(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MedicationsScreen(),
-                    ));*/
+                    ));
               },
               child: ListTile(
                 title: Text(
@@ -120,11 +122,11 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(
+              /*  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => TasksScreen(),
-                    ));
+                    ));*/
               },
               child: ListTile(
                 title: Text(
@@ -186,7 +188,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
       ),
       appBar: AppBar(
         title: Text(
-          "Medications",
+          "Tasks",
         ),
         backgroundColor: AppColor.primaryColor,
       ),
@@ -196,9 +198,9 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: medicationDetails.length,
+                  itemCount: taskDetails.length, // Changed list name
                   itemBuilder: (context, index) {
-                    final medication = medicationDetails[index];
+                    final task = taskDetails[index]; // Changed list name
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Container(
@@ -218,63 +220,29 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                children: [
-                                  Text(
-                                    'Name : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.name,
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
+                              Text(
+                                'Task Name : ${task.taskName}', // Changed variable name
+                                style: TextStyle(
+                                  color: AppColor.textWhiteColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
-                              Wrap(
-                                children: [
-                                  Text(
-                                    'Description : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.description,
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
+                              Text(
+                                'Task Description : ${task.taskDescription}', // Changed variable name
+                                style: TextStyle(
+                                  color: AppColor.textWhiteColor,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 20,
+                                ),
                               ),
-                              Wrap(
-                                children: [
-                                  Text(
-                                    'Doses per Day : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.dosesPerDay.toString(),
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
+                              Text(
+                                'Tasks per Day : ${task.tasksPerDay}', // Changed variable name
+                                style: TextStyle(
+                                  color: AppColor.textWhiteColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -283,7 +251,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                     padding: const EdgeInsets.only(right: 8),
                                     child: GestureDetector(
                                       onTap: () {
-                                        deleteMedication(index);
+                                        deleteTask(index); // Changed list name
                                       },
                                       child: CircleAvatar(
                                         backgroundColor: Colors.red,
@@ -308,30 +276,33 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
               ),
             ],
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewMedicinePage(
-                          onSubmit: (name, description, dosesPerDay) {
-                            setState(() {
-                              medicationDetails.add(MedicationDetail(
-                                name: name,
-                                description: description,
-                                dosesPerDay: dosesPerDay,
-                              ));
-                            });
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  child: Padding(
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewTaskScreen(
+                    // Changed import and class name
+                    onSubmit: (name, description, tasksPerDay) {
+                      // Changed variable name
+                      setState(() {
+                        taskDetails.add(TaskDetail(
+                          // Changed list name and class name
+                          taskName: name, // Changed variable name
+                          taskDescription: description, // Changed variable name
+                          tasksPerDay: tasksPerDay, // Changed variable name
+                        ));
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: Container(
                       height: Height * 0.085,
@@ -347,7 +318,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                                 color: AppColor.textWhiteColor,
                               ),
                               Text(
-                                "Add Medication",
+                                "Add Task",
                                 style: TextStyle(
                                   color: AppColor.textWhiteColor,
                                   fontSize: 18,
@@ -372,8 +343,8 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

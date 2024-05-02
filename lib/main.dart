@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phms/Colors/colors.dart';
 import 'package:phms/screens/starting_screens/splashscreen.dart';
 
 void main() {
@@ -14,19 +15,20 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        timePickerTheme: TimePickerThemeData(
-          dialHandColor: Colors.blue,
-          dayPeriodColor: Colors.blue,
-          hourMinuteTextColor: Colors.black,
-        
-        ),
-        appBarTheme: AppBarTheme(
-          color: Colors.white,
-          foregroundColor: Colors.white,
-          centerTitle: true
-        )
-      ),
-      
+          timePickerTheme: TimePickerThemeData(
+              dialHandColor: Colors.red,
+              dayPeriodColor: Colors.red,
+              hourMinuteTextColor: Colors.black,
+              dialTextColor: Colors.black,
+              dialBackgroundColor: Colors.white,
+              hourMinuteColor: Colors.white),
+          appBarTheme: AppBarTheme(
+              color: Colors.white,
+              foregroundColor: Colors.white,
+              centerTitle: true),
+          drawerTheme: DrawerThemeData(
+            backgroundColor: AppColor.primaryColor,
+          )),
     );
   }
 }

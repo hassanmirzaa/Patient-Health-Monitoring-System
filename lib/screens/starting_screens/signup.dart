@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:phms/Colors/colors.dart';
 
-import 'package:phms/screens/main_screens/dashboard.dart';
+import 'package:phms/screens/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
@@ -13,14 +13,14 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-String dropdownValue = 'Male';
-String bloodGroupValue = 'A+';
-final firstnameController = TextEditingController();
-final lastnameController = TextEditingController();
-final ageController = TextEditingController();
-final descriptionController = TextEditingController();
+  String dropdownValue = 'Male';
+  String bloodGroupValue = 'A+';
+  final firstnameController = TextEditingController();
+  final lastnameController = TextEditingController();
+  final ageController = TextEditingController();
+  final descriptionController = TextEditingController();
 
-   @override
+  @override
   Widget build(BuildContext context) {
     final Width = MediaQuery.of(context).size.width;
     final Height = MediaQuery.of(context).size.height;
@@ -37,10 +37,13 @@ final descriptionController = TextEditingController();
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: Height*0.02,),
+              SizedBox(
+                height: Height * 0.02,
+              ),
               Form(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Column(
                     children: [
                       TextFormField(
@@ -54,9 +57,9 @@ final descriptionController = TextEditingController();
                           ),
                         ),
                       ),
-                      SizedBox(height: Height*0.02,),
-
-
+                      SizedBox(
+                        height: Height * 0.02,
+                      ),
                       TextFormField(
                         controller: lastnameController,
                         keyboardType: TextInputType.name,
@@ -67,9 +70,9 @@ final descriptionController = TextEditingController();
                           ),
                         ),
                       ),
-                      SizedBox(height: Height*0.02,),
-
-
+                      SizedBox(
+                        height: Height * 0.02,
+                      ),
                       TextFormField(
                         controller: ageController,
                         keyboardType: TextInputType.number,
@@ -80,12 +83,13 @@ final descriptionController = TextEditingController();
                           ),
                         ),
                       ),
-                      SizedBox(height: Height*0.02,),
-
-
+                      SizedBox(
+                        height: Height * 0.02,
+                      ),
                       InputDecorator(
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16)),
                           contentPadding: const EdgeInsets.all(10),
                         ),
                         child: DropdownButtonHideUnderline(
@@ -118,15 +122,17 @@ final descriptionController = TextEditingController();
                           ),
                         ),
                       ),
-                  SizedBox(height: Height*0.02,),
+                      SizedBox(
+                        height: Height * 0.02,
+                      ),
                       InputDecorator(
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16)),
                           contentPadding: const EdgeInsets.all(10),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
-
                             isExpanded: true,
                             value: bloodGroupValue,
                             style: TextStyle(color: Colors.black),
@@ -144,7 +150,7 @@ final descriptionController = TextEditingController();
                                 child: Text("B+"),
                                 value: "B+",
                               ),
-                               DropdownMenuItem(
+                              DropdownMenuItem(
                                 child: Text("B-"),
                                 value: "B-",
                               ),
@@ -175,9 +181,9 @@ final descriptionController = TextEditingController();
                           ),
                         ),
                       ),
-                      SizedBox(height: Height*0.02,),
-
-
+                      SizedBox(
+                        height: Height * 0.02,
+                      ),
                       TextFormField(
                         controller: descriptionController,
                         keyboardType: TextInputType.name,
@@ -188,36 +194,42 @@ final descriptionController = TextEditingController();
                           ),
                         ),
                       ),
-                  
-                  
                     ],
                   ),
                 ),
               ),
               GestureDetector(
-                onTap: () async{
+                onTap: () async {
                   SharedPreferences sp = await SharedPreferences.getInstance();
                   sp.setString('name', firstnameController.text.toString());
                   sp.setString('lastName', lastnameController.text.toString());
                   sp.setString("age", ageController.text.toString());
                   sp.setString("gender", dropdownValue.toString());
                   sp.setString("blood", bloodGroupValue.toString());
-                  sp.setString("description", descriptionController.text.toString());
+                  sp.setString(
+                      "description", descriptionController.text.toString());
                   sp.setBool("isLogin", true);
 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DahsboardScreen(),));
-
-                  
-
-                  
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DahsboardScreen(),
+                      ));
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(vertical: 20),
                   padding: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: AppColor.primaryColor,
-                  ),
+                      color: AppColor.primaryColor,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(16)),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(-4, 2),
+                          blurRadius: 10,
+                        )
+                      ]),
                   child: Text(
                     "Submit",
                     style: TextStyle(
@@ -227,15 +239,12 @@ final descriptionController = TextEditingController();
                   ),
                 ),
               ),
-
-
             ],
           ),
         ),
-     ),
-);
-}
-Future <void> infoo() async{
+      ),
+    );
+  }
 
-}
+  Future<void> infoo() async {}
 }
