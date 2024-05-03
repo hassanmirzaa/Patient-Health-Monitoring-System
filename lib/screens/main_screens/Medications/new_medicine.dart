@@ -5,7 +5,7 @@ import 'package:phms/screens/main_screens/Health%20Monitoring/health_monitoring.
 import 'package:phms/screens/main_screens/Medications/medications.dart';
 import 'package:phms/screens/main_screens/Tasks/tasks.dart';
 import 'package:phms/screens/dashboard.dart';
-import 'package:phms/screens/logout.dart';
+import 'package:phms/Sign%20out/logout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewMedicinePage extends StatefulWidget {

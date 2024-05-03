@@ -40,16 +40,12 @@ class _LogoutState extends State<Logout> {
       body: Center(
         child: GestureDetector(
           onTap: () async {
-            SharedPreferences sp = await SharedPreferences.getInstance();
+  SharedPreferences sp = await SharedPreferences.getInstance();
 
-            sp.clear();
+  sp.clear();
 
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignUp(),
-                ));
-          },
+ 
+},
           child: Container(
             width: Width * 0.5,
             height: Height * 0.09,

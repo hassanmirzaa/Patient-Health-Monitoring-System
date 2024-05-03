@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:phms/Colors/colors.dart';
+import 'package:phms/Sign%20out/logout_dialogue.dart';
 import 'package:phms/screens/dashboard.dart';
 import 'package:phms/screens/main_screens/Awareness/awareness.dart';
 import 'package:phms/screens/main_screens/Health%20Monitoring/health_monitoring.dart';
 import 'package:phms/screens/main_screens/Reports/reports.dart';
 import 'package:phms/screens/main_screens/Tasks/tasks.dart';
-import 'package:phms/screens/logout.dart';
+import 'package:phms/Sign%20out/logout.dart';
 import 'package:phms/screens/main_screens/Medications/medications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -164,14 +165,11 @@ class CustomDrawer extends StatelessWidget {
           Spacer(),
           ListTile(
             title: Text(
-              'Add or Switch Patient',
+              ' Switch Patient',
               style: TextStyle(color: AppColor.textWhiteColor),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Logout()),
-              );
+             showSignoutDialog(context);
             },
           ),
         ],
