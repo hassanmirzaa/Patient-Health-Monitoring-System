@@ -18,22 +18,39 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Height = MediaQuery.of(context).size.height;
+    final Width = MediaQuery.of(context).size.width;
     return Drawer(
       child: Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
+            height: Height * 0.07,
           ),
-          CircleAvatar(
-            radius: 80,
-            backgroundImage: AssetImage('assets/images/phms.logo.png'),
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    child: ClipOval(
+                     child: Image.asset( 'assets/images/phms.logo.png',fit: BoxFit.cover,),
+                     
+                    ),
+                  );
+                },
+              );
+            },
+            child: CircleAvatar(
+              radius: 80,
+              backgroundImage: AssetImage('assets/images/phms.logo.png'),
+            ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
+            height: Height * 0.02,
           ),
           Divider(
-            endIndent: 40,
-            indent: 40,
+            endIndent: Width * 0.1,
+            indent: Width * 0.1,
             color: AppColor.textWhiteColor,
           ),
           ListTile(
