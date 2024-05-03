@@ -57,7 +57,8 @@ class _LogoutState extends State<Logout> {
               child: Text(
                 "Logout / Switch user",
                 style: TextStyle(
-                  color: AppColor.textWhiteColor,
+                  color: AppColor.textWhiteColor, 
+                  
                   fontSize: 18,
                 ),
               ),
