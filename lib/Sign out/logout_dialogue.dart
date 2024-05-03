@@ -6,7 +6,17 @@ void showSignoutDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('Do you want to Signout?'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20)
+        )
+      ),
+      backgroundColor: AppColor.primaryColor,
+      title: Text('Do you want to Signout?',
+      style: TextStyle(
+        color: AppColor.textWhiteColor
+      ),),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
@@ -24,7 +34,7 @@ void showSignoutDialog(BuildContext context) {
                     height: MediaQuery.of(context).size.height * 0.05,
                     width: MediaQuery.of(context).size.width * 0.22,
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppColor.blueColor, width: 2),
+                      border: Border.all(color: AppColor.textWhiteColor, width: 2),
                       borderRadius: BorderRadius.all(
                         Radius.circular(16),
                       ),
@@ -33,7 +43,7 @@ void showSignoutDialog(BuildContext context) {
                       child: Text(
                         "No",
                         style: TextStyle(
-                            color: AppColor.blueColor,
+                            color: AppColor.textWhiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.w400),
                       ),
@@ -56,7 +66,7 @@ void showSignoutDialog(BuildContext context) {
                     height: MediaQuery.of(context).size.height * 0.05,
                     width: MediaQuery.of(context).size.width * 0.22,
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppColor.blueColor, width: 2),
+                      border: Border.all(color: AppColor.textWhiteColor, width: 2),
                       borderRadius: BorderRadius.all(
                         Radius.circular(16),
                       ),
@@ -65,7 +75,7 @@ void showSignoutDialog(BuildContext context) {
                       child: Text(
                         "Yes",
                         style: TextStyle(
-                            color: AppColor.blueColor,
+                            color: AppColor.textWhiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.w400),
                       ),

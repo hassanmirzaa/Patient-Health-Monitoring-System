@@ -8,7 +8,6 @@ import 'package:phms/screens/main_screens/Medications/new_medicine.dart';
 import 'package:phms/screens/main_screens/Reports/reports.dart';
 import 'package:phms/screens/main_screens/Tasks/tasks.dart';
 import 'package:phms/screens/dashboard.dart';
-import 'package:phms/Sign%20out/logout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MedicationDetail {
