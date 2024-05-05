@@ -1,39 +1,20 @@
+import 'dart:convert';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:phms/Colors/colors.dart';
-import 'package:phms/screens/main_screens/Awareness/awareness.dart';
 import 'package:phms/screens/main_screens/Drawer/drawer.dart';
-import 'package:phms/screens/main_screens/Health%20Monitoring/health_monitoring.dart';
-import 'package:phms/screens/main_screens/Medications/medications.dart';
-import 'package:phms/screens/main_screens/Reports/reports.dart';
-import 'package:phms/screens/main_screens/Tasks/newTask.dart'; // Changed import
-import 'package:phms/screens/main_screens/Tasks/tasks.dart'; // Changed import
-import 'package:phms/screens/dashboard.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
-
-class TaskDetail {
-  // Changed class name
-  final String taskName; // Changed variable name
-  final String taskDescription; // Changed variable name
-  final int tasksPerDay; // Changed variable name
-
-  TaskDetail({
-    required this.taskName, // Changed variable name
-    required this.taskDescription, // Changed variable name
-    required this.tasksPerDay, // Changed variable name
-  });
-}
+import 'package:phms/screens/main_screens/Tasks/newTask.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Importing the NewTaskPage
 
 class TasksScreen extends StatefulWidget {
-  const TasksScreen({Key? key}) : super(key: key); // Corrected super call
+  const TasksScreen();
 
   @override
   State<TasksScreen> createState() => _TasksScreenState();
 }
 
 class _TasksScreenState extends State<TasksScreen> {
-  List<TaskDetail> taskDetails = []; // Changed list name
+  List<Map<String, dynamic>> taskDetails = [];
 
   @override
   void initState() {
@@ -42,13 +23,28 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 
   loadTaskData() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    // Load task details from SharedPreferences or any other storage mechanism
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('taskDetails')) {
+      String jsonData = prefs.getString('taskDetails')!;
+      setState(() {
+        taskDetails = List<Map<String, dynamic>>.from(
+          (json.decode(jsonData) as List<dynamic>)
+              .map((item) => Map<String, dynamic>.from(item)),
+        );
+      });
+    }
+  }
+
+  saveTaskData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonData = json.encode(taskDetails);
+    prefs.setString('taskDetails', jsonData);
   }
 
   void deleteTask(int index) {
     setState(() {
-      taskDetails.removeAt(index); // Changed list name
+      taskDetails.removeAt(index);
+      saveTaskData();
     });
   }
 
@@ -60,167 +56,122 @@ class _TasksScreenState extends State<TasksScreen> {
     return Scaffold(
       drawer: CustomDrawer(currentPage: 'tasks'),
       appBar: AppBar(
-        title: Text(
-          "Tasks",
-        ),
+        title: Text("Tasks"), // Updated title
         backgroundColor: AppColor.primaryColor,
       ),
       body: Stack(
-        children: [
-          Column(
+        children:[SingleChildScrollView(
+       //  physics: NeverScrollableScrollPhysics(),
+          child: Column(
             children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: taskDetails.length, // Changed list name
-                  itemBuilder: (context, index) {
-                    final task = taskDetails[index]; // Changed list name
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColor.primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(-4, 2),
-                              blurRadius: 10,
-                            )
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: taskDetails.length,
+                itemBuilder: (context, index) {
+                  final task = taskDetails[index]; // Updated variable name
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColor.primaryColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Name: ${task['name']}", // Updated text
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold,color: AppColor.textWhiteColor)),
+                            SizedBox(height: 8),
+                            Text("Description: ${task['description']}", // Updated text
+                                style: TextStyle(fontSize: 18,color: AppColor.textWhiteColor)),
+                            SizedBox(height: 8),
+                            Text("Doses Per Day: ${task['dosesPerDay']}", // Updated text
+                                style: TextStyle(fontSize: 18,color: AppColor.textWhiteColor)),
+                            SizedBox(height: 8),
+                            Text("Times: ", // Updated text
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold,color: AppColor.textWhiteColor)),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: (task['times'] as List<dynamic>)
+                                  .map((time) {
+                                return Text(time, style: TextStyle(fontSize: 18,color: AppColor.textWhiteColor));
+                              }).toList(),
+                            ),
+                            SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                onPressed: () => deleteTask(index), // Updated function call
+                                icon: Icon(Icons.delete,color: AppColor.textWhiteColor,),
+                              ),
+                            ),
                           ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Task Name : ${task.taskName}', // Changed variable name
-                                style: TextStyle(
-                                  color: AppColor.textWhiteColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              Text(
-                                'Task Description : ${task.taskDescription}', // Changed variable name
-                                style: TextStyle(
-                                  color: AppColor.textWhiteColor,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Text(
-                                'Tasks per Day : ${task.tasksPerDay}', // Changed variable name
-                                style: TextStyle(
-                                  color: AppColor.textWhiteColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        deleteTask(index); // Changed list name
-                                      },
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.red,
-                                        child: Icon(Icons.delete,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                color: Color(0x00000000),
-                height: Height * 0.135,
-              ),
-            ],
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NewTaskScreen(
-                    // Changed import and class name
-                    onSubmit: (name, description, tasksPerDay) {
-                      // Changed variable name
-                      setState(() {
-                        taskDetails.add(TaskDetail(
-                          // Changed list name and class name
-                          taskName: name, // Changed variable name
-                          taskDescription: description, // Changed variable name
-                          tasksPerDay: tasksPerDay, // Changed variable name
-                        ));
-                      });
-                    },
-                  ),
-                ),
-              );
-            },
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Container(
-                      height: Height * 0.085,
-                      width: Width * 0.6,
-                      child: Center(
-                        child: Container(
-                          width: Width * 0.45,
-                          child: Wrap(
-                            alignment: WrapAlignment.spaceAround,
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: AppColor.textWhiteColor,
-                              ),
-                              Text(
-                                "Add Task",
-                                style: TextStyle(
-                                  color: AppColor.textWhiteColor,
-                                  fontSize: 18,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(-4, 2),
-                            blurRadius: 10,
-                          )
-                        ],
                       ),
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
+              SizedBox(height: Height * 0.13),
+            ],
           ),
-        ],
+        ),
+           Center(
+               child: Column(mainAxisAlignment: MainAxisAlignment.end,
+                 children: [
+                   GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewTaskPage( // Updated route
+                            onSubmit: (taskData) {
+                              setState(() {
+                                taskDetails.add(taskData); // Updated variable name
+                                saveTaskData();
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: Height * 0.08,
+                      width: Width * 0.6,
+                      decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(16),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(-4, 2),
+                                    blurRadius: 10,
+                                  )
+                                ],
+                              ),
+                      child: Center(
+                        child: Text("Add Task", // Updated text
+                            style: TextStyle(fontSize: 18, color: Colors.white)),
+                      ),
+                    ),
+                               ),
+                               SizedBox(height: Height * 0.05),
+                 ],
+               ),
+             ),
+             
+            
+            ] 
+            
+           
+          
       ),
     );
   }

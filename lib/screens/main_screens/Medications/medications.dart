@@ -1,36 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:phms/Colors/colors.dart';
-import 'package:phms/screens/main_screens/Awareness/awareness.dart';
 import 'package:phms/screens/main_screens/Drawer/drawer.dart';
-import 'package:phms/screens/main_screens/Health%20Monitoring/health_monitoring.dart';
 import 'package:phms/screens/main_screens/Medications/new_medicine.dart';
-import 'package:phms/screens/main_screens/Reports/reports.dart';
-import 'package:phms/screens/main_screens/Tasks/tasks.dart';
-import 'package:phms/screens/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MedicationDetail {
-  final String name;
-  final String description;
-  final int dosesPerDay;
-
-  MedicationDetail({
-    required this.name,
-    required this.description,
-    required this.dosesPerDay,
-  });
-}
-
 class MedicationsScreen extends StatefulWidget {
-  const MedicationsScreen({Key? key}) : super(key: key);
+  const MedicationsScreen();
 
   @override
   State<MedicationsScreen> createState() => _MedicationsScreenState();
 }
 
 class _MedicationsScreenState extends State<MedicationsScreen> {
-  List<MedicationDetail> medicationDetails = [];
+  List<Map<String, dynamic>> medicationDetails = [];
 
   @override
   void initState() {
@@ -39,13 +23,28 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   }
 
   loadMedicineData() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    // Load medication details from SharedPreferences or any other storage mechanism
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('medicationDetails')) {
+      String jsonData = prefs.getString('medicationDetails')!;
+      setState(() {
+        medicationDetails = List<Map<String, dynamic>>.from(
+          (json.decode(jsonData) as List<dynamic>)
+              .map((item) => Map<String, dynamic>.from(item)),
+        );
+      });
+    }
+  }
+
+  saveMedicineData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonData = json.encode(medicationDetails);
+    prefs.setString('medicationDetails', jsonData);
   }
 
   void deleteMedication(int index) {
     setState(() {
       medicationDetails.removeAt(index);
+      saveMedicineData();
     });
   }
 
@@ -57,198 +56,123 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
     return Scaffold(
       drawer: CustomDrawer(currentPage: 'medications'),
       appBar: AppBar(
-        title: Text(
-          "Medications",
-        ),
+        title: Text("Medications"),
         backgroundColor: AppColor.primaryColor,
       ),
       body: Stack(
-        children: [
-          Column(
+        children:[SingleChildScrollView(
+       //  physics: NeverScrollableScrollPhysics(),
+          child: Column(
             children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: medicationDetails.length,
-                  itemBuilder: (context, index) {
-                    final medication = medicationDetails[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColor.primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(-4, 2),
-                              blurRadius: 10,
-                            )
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: medicationDetails.length,
+                itemBuilder: (context, index) {
+                  final medication = medicationDetails[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColor.primaryColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Name: ${medication['name']}",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold,color: AppColor.textWhiteColor)),
+                            SizedBox(height: 8),
+                            Text("Description: ${medication['description']}",
+                                style: TextStyle(fontSize: 18,color: AppColor.textWhiteColor)),
+                            SizedBox(height: 8),
+                            Text("Doses Per Day: ${medication['dosesPerDay']}",
+                                style: TextStyle(fontSize: 18,color: AppColor.textWhiteColor)),
+                            SizedBox(height: 8),
+                            Text("Times: ",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold,color: AppColor.textWhiteColor)),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: (medication['times'] as List<dynamic>)
+                                  .map((time) {
+                                return Text(time, style: TextStyle(fontSize: 18,color: AppColor.textWhiteColor));
+                              }).toList(),
+                            ),
+                            SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                onPressed: () => deleteMedication(index),
+                                icon: Icon(Icons.delete,color: AppColor.textWhiteColor,),
+                              ),
+                            ),
                           ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                children: [
-                                  Text(
-                                    'Name : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.name,
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Wrap(
-                                children: [
-                                  Text(
-                                    'Description : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.description,
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Wrap(
-                                children: [
-                                  Text(
-                                    'Doses per Day : ',
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  Text(
-                                    medication.dosesPerDay.toString(),
-                                    style: TextStyle(
-                                      color: AppColor.textWhiteColor,
-                                      fontSize: 20,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        deleteMedication(index);
-                                      },
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.red,
-                                        child: Icon(Icons.delete,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                color: Color(0x00000000),
-                height: Height * 0.135,
-              ),
-            ],
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewMedicinePage(
-                          onSubmit: (name, description, dosesPerDay) {
-                            setState(() {
-                              medicationDetails.add(MedicationDetail(
-                                name: name,
-                                description: description,
-                                dosesPerDay: dosesPerDay,
-                              ));
-                            });
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Container(
-                      height: Height * 0.085,
-                      width: Width * 0.6,
-                      child: Center(
-                        child: Container(
-                          width: Width * 0.45,
-                          child: Wrap(
-                            alignment: WrapAlignment.spaceAround,
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: AppColor.textWhiteColor,
-                              ),
-                              Text(
-                                "Add Medication",
-                                style: TextStyle(
-                                  color: AppColor.textWhiteColor,
-                                  fontSize: 18,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(16),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(-4, 2),
-                            blurRadius: 10,
-                          )
-                        ],
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
+                  );
+                },
+              ),
+              SizedBox(height: Height * 0.13),
+            ],
           ),
-        ],
+        ),
+           
+        Center(
+               child: Column(mainAxisAlignment: MainAxisAlignment.end,
+                 children: [
+                   GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewMedicinePage(
+                            onSubmit: (medicineData) {
+                              setState(() {
+                                medicationDetails.add(medicineData);
+                                saveMedicineData();
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: Height * 0.08,
+                      width: Width * 0.6,
+                      decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(16),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(-4, 2),
+                                    blurRadius: 10,
+                                  )
+                                ],
+                              ),
+                      child: Center(
+                        child: Text("Add Medicine",
+                            style: TextStyle(fontSize: 18, color: Colors.white)),
+                      ),
+                    ),
+                               ),
+                               SizedBox(height: Height * 0.05),
+                 ],
+               ),
+             ),
+                
+            
+            ] 
+            
+           
+          
       ),
     );
   }

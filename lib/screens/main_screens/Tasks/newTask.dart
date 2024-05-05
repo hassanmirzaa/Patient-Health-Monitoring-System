@@ -1,32 +1,41 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phms/Colors/colors.dart';
+import 'package:phms/screens/main_screens/Drawer/drawer.dart';
 
-class NewTaskScreen extends StatefulWidget {
-  const NewTaskScreen({
-    Key? key,
-    required this.onSubmit,
+class TaskDetail {
+  final String name;
+  final String description;
+  final int dosesPerDay;
+  final List<TimeOfDay> times;
+
+  TaskDetail({
+    required this.name,
+    required this.description,
+    required this.dosesPerDay,
+    required this.times,
   });
-
-  final void Function(
-      dynamic taskName, dynamic taskDescription, dynamic tasksPerDay) onSubmit;
-
-  @override
-  State<NewTaskScreen> createState() => _NewTaskScreenState();
 }
 
-class _NewTaskScreenState extends State<NewTaskScreen> {
+class NewTaskPage extends StatefulWidget {
+  final Function(Map<String, dynamic>) onSubmit;
+
+  const NewTaskPage({Key? key, required this.onSubmit}) : super(key: key);
+
+  @override
+  State<NewTaskPage> createState() => _NewTaskPageState();
+}
+
+class _NewTaskPageState extends State<NewTaskPage> {
   final taskNameController = TextEditingController();
   final taskDescriptionController = TextEditingController();
-  int tasksPerDay = 1;
-  List<TimeOfDay> times = []; // List of times
+  int dosesPerDay = 1;
+  List<TimeOfDay> times = [];
 
   @override
   void initState() {
     super.initState();
-    // Initialize times with default values
     times =
-        List.generate(tasksPerDay, (index) => TimeOfDay(hour: 0, minute: 0));
+        List.generate(dosesPerDay, (index) => TimeOfDay(hour: 0, minute: 0));
   }
 
   @override
@@ -35,173 +44,122 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     final Width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      //drawer: CustomDrawer(currentPage: 'health_monitoring'),
       appBar: AppBar(
-        title: Text(
-          "Add New",
-          style: TextStyle(color: AppColor.textWhiteColor),
-        ),
+        title: Text("Add New Task"), // Updated title
         backgroundColor: AppColor.primaryColor,
       ),
       body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    child: Text(
-                      "Task:",
-                      style: TextStyle(fontSize: 22),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: taskNameController,
-                    ),
-                  ),
-                  SizedBox(height: Height * 0.02),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    child: Text(
-                      "Description:",
-                      style: TextStyle(fontSize: 22),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: taskDescriptionController,
-                    ),
-                  ),
-                  SizedBox(height: Height * 0.02),
-                  Container(
-                    width: Width * 0.8,
-                    child: Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16),
-                          child: Text(
-                            " Per Day",
-                            style: TextStyle(fontSize: 22),
-                          ),
-                        ),
-                        Container(
-                          width: Width * 0.15,
-                          child: DropdownButton<int>(
-                            value: tasksPerDay,
-                            items: List.generate(48, (index) => index + 1)
-                                .map<DropdownMenuItem<int>>(
-                                  (int value) => DropdownMenuItem<int>(
-                                    value: value,
-                                    child: Text(value.toString()),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (int? newValue) {
-                              setState(() {
-                                tasksPerDay = newValue!;
-                                times = List.generate(newValue,
-                                    (index) => TimeOfDay(hour: 0, minute: 0));
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      children: List.generate(
-                        tasksPerDay,
-                        (index) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: InkWell(
-                              onTap: () => _selectTime(index),
-                              child: Container(
-                                width: Width * 0.2,
-                                child: InputDecorator(
-                                  decoration: InputDecoration(
-                                    labelText: 'Time ${index + 1}',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    '${times[index].hour}:${times[index].minute.toString().padLeft(2, '0')}',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Height * 0.13),
-                ],
-              ),
-            ),
-          ),
-          Center(
+        children:[ SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: () async {
-                    widget.onSubmit(
-                      taskNameController.text.toString(),
-                      taskDescriptionController.text.toString(),
-                      tasksPerDay,
-                    );
-                    Navigator.pop(context);
+                Text("Task Name :", style: TextStyle(fontSize: 22)), // Updated text
+                TextFormField(controller: taskNameController),
+                SizedBox(height: Height * 0.02),
+                Text("Description:", style: TextStyle(fontSize: 22)), // Updated text
+                TextFormField(controller: taskDescriptionController),
+                SizedBox(height: Height * 0.02),
+                Text("Doses Per Day", style: TextStyle(fontSize: 22)), // Updated text
+                DropdownButton<int>(
+                  value: dosesPerDay,
+                  items: List.generate(48, (index) => index + 1)
+                      .map<DropdownMenuItem<int>>(
+                        (int value) => DropdownMenuItem<int>(
+                          value: value,
+                          child: Text(value.toString()),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      dosesPerDay = newValue!;
+                      times = List.generate(
+                          newValue, (index) => TimeOfDay(hour: 0, minute: 0));
+                    });
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Container(
-                      height: Height * 0.085,
-                      width: Width * 0.35,
-                      child: Center(
+                ),
+                Column(
+                  children: List.generate(
+                    dosesPerDay,
+                    (index) => Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: InkWell(
+                        onTap: () => _selectTime(index),
                         child: Container(
-                          width: Width * 0.45,
-                          child: Center(
+                          width: Width * 0.2,
+                          child: InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: 'Time ${index + 1}',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                            ),
                             child: Text(
-                              "Submit",
-                              style: TextStyle(
-                                  color: AppColor.textWhiteColor, fontSize: 18),
+                              '${times[index].hour}:${times[index].minute.toString().padLeft(2, '0')}',
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                         ),
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            bottomRight: Radius.circular(20)),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(-4, 2),
-                            blurRadius: 10,
-                          )
-                        ],
                       ),
                     ),
                   ),
                 ),
+                SizedBox(height: Height * 0.13),
+                
               ],
             ),
           ),
-        ],
-      ),
+        ),
+        Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Map<String, dynamic> taskData = {
+                          'name': taskNameController.text.toString(),
+                          'description':
+                              taskDescriptionController.text.toString(),
+                          'dosesPerDay': dosesPerDay,
+                          'times': times
+                              .map((time) =>
+                                  '${time.hour}:${time.minute.toString().padLeft(2, '0')}')
+                              .toList(),
+                        };
+                        widget.onSubmit(taskData);
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height: Height * 0.085,
+                        width: Width * 0.35,
+                        child: Center(
+                          child: Text("Submit", style: TextStyle(fontSize: 18,color: AppColor.textWhiteColor)),
+                        ),
+                         decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(16),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: Offset(-4, 2),
+                                        blurRadius: 10,
+                                      )
+                                    ],
+                                  ),
+                      ),
+                    ),
+                    SizedBox(height: Height*0.04,)
+                  ],
+                ),
+              ),
+  ]    ),
     );
   }
+
 
   Future<void> _selectTime(int index) async {
     TimeOfDay initialTime = times[index] ?? TimeOfDay(hour: 0, minute: 0);
